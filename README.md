@@ -1,0 +1,143 @@
+# 🤖 My Agent
+
+一个从零实现的多步推理 Agent，不依赖任何 Agent 框架。
+
+## ✨ 特性
+
+- **ReAct 循环**：基于 Function Calling 的工具调用，比正则解析稳定
+- **多步推理**：能自动完成"查天气 → 搜景点 → 搜价格 → 算预算 → 输出行程"的完整链路
+- **上下文压缩**：对话历史超 8000 字符时自动摘要旧消息
+- **长期记忆**：跨会话记住用户偏好，JSON 持久化
+- **Streamlit Web UI**：浏览器聊天界面
+- **单元测试**：pytest 覆盖核心模块
+- **错误重试**：指数退避重试 LLM 调用
+
+## 🏗️ 架构
+
+```
+┌─────────────┐
+│  Web UI     │  Streamlit
+│  (web_ui.py)│
+└──────┬──────┘
+       ↓
+┌─────────────┐
+│  Agent      │  ReAct 循环 + 上下文压缩 + 记忆
+│  (agent.py) │
+└──┬───┬───┬──┘
+   ↓   ↓   ↓
+┌────┐┌─────┐┌──────┐
+│LLM ││工具  ││记忆  │
+│llm ││tools││memory│
+└────┘└─────┘└──────┘
+```
+
+## 🚀 快速开始
+
+### 1. 安装依赖
+
+```bash
+pip install -r requirements.txt
+```
+
+### 2. 配置 API Key
+
+在项目根目录创建 `.env` 文件：
+
+```
+DEEPSEEK_API_KEY=sk-你的key
+TAVILY_API_KEY=tvly-你的key（可选，用于搜索工具）
+```
+
+- DeepSeek Key: https://platform.deepseek.com/
+- Tavily Key: https://tavily.com/
+
+### 3. 运行
+
+**命令行模式**：
+
+```bash
+python main.py
+```
+
+**Web UI 模式**：
+
+```bash
+streamlit run web_ui.py
+```
+
+浏览器会自动打开 `http://localhost:8501`。
+
+## 🎯 使用示例
+
+```
+你: 帮我规划去成都玩 3 天，预算中等
+
+[Agent 自动执行]
+🔧 get_weather({'city': '成都'})
+🔧 search_attractions({'city': '成都', 'days': 3})
+🔧 estimate_budget({'city': '成都', 'days': 3, 'level': '中等'})
+🔧 calculator({'expression': '346*2 + 200*3 + 310'})
+
+助手: 【成都 3 天行程规划】
+Day 1: 熊猫基地 + 市区文化
+Day 2: 武侯祠 + 锦里古街
+Day 3: 宽窄巷子 + 三星堆
+预算明细：约 ¥1,602/人
+```
+
+## 📁 项目结构
+
+```
+tool_agent/
+├── agent.py           # Agent 核心：ReAct 循环 + 压缩 + 记忆
+├── llm.py             # LLM 客户端（带重试）
+├── tools.py           # 工具定义（JSON Schema）
+├── memory.py          # 长期记忆（JSON 持久化）
+├── main.py            # 命令行入口
+├── web_ui.py          # Streamlit Web UI
+├── test_tools.py      # 工具测试
+├── test_memory.py     # 记忆测试
+├── requirements.txt   # 依赖
+└── README.md
+```
+
+## 🧪 测试
+
+```bash
+pytest -v
+```
+
+预期：7 个测试全部通过。
+
+## 🔧 技术要点
+
+### 1. Function Calling（而不是正则解析）
+
+早期版本用 prompt + 正则解析工具调用，LLM 输出格式不稳定。改用 Function Calling 后：
+- 用 JSON Schema 定义工具
+- 模型直接返回结构化 `tool_calls`
+- 代码量减少一半，稳定性大幅提升
+
+### 2. 上下文压缩
+
+对话历史超过 8000 字符时，把最早的消息用 LLM 摘要成一段话，保留最近 4 条原文。
+
+### 3. 长期记忆
+
+对话结束后让 LLM 提取值得记的事实，存到 JSON；下次对话前检索相关记忆注入 system prompt。
+
+### 4. 指数退避重试
+
+LLM 调用失败时，等待 1s → 2s → 4s 后重试，最多 3 次。
+
+## 📚 参考
+
+实现过程中对比学习了三个开源 Agent 框架：
+
+- [pi](https://github.com/earendil-works/pi)：可扩展的 hook 系统
+- [nanobot](https://github.com/HKUDS/nanobot)：Dream 记忆系统
+- [dsh](https://github.com/deepseek-ai/deepseek-harness)：插件化架构
+
+## 📄 License
+
+MIT

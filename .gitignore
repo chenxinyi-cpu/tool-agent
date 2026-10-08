@@ -1,0 +1,28 @@
+# 敏感信息
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 虚拟环境
+.venv/
+venv/
+env/
+
+# 测试缓存
+.pytest_cache/
+
+# IDE
+.idea/
+.vscode/
+
+# 运行时数据
+memory.json
+test_memory.json
+
+# 其他
+.DS_Store
+*.log
