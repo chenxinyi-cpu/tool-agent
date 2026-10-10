@@ -24,7 +24,7 @@ SYSTEM_PROMPT = """你是一个智能助手，可以使用工具帮助用户解�
 
 def main():
     llm = LLMClient(model="deepseek-chat")
-    memory = Memory(path="memory.json")
+    memory = Memory(path="memory.json",llm=llm)
     agent = Agent(
         llm=llm,
         system_prompt=SYSTEM_PROMPT,

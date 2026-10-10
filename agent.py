@@ -101,8 +101,11 @@ class Agent:
         for line in result.strip().split("\n"):
             line = line.strip("- •*").strip()
             if line and line != "无":
-                self.memory.add(line)
-                print(f"  💾 记住：{line}")
+                added = self.memory.add(line)
+                if added:
+                    print(f"  💾 记住：{line}")
+                else:
+                    print(f"  ⏭️ 跳过重复：{line}")
 
 
     def _maybe_compress(self):

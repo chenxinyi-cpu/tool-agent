@@ -25,7 +25,7 @@ SYSTEM_PROMPT = """你是一个智能助手，可以使用工具帮助用户解�
 def get_agent():
     """Agent 实例只在第一次调用时创建，之后复用。"""
     llm=LLMClient(model="deepseek-chat")
-    memory=Memory(path="./memory.json")
+    memory=Memory(path="./memory.json",llm=llm)
     return Agent(
         llm=llm,
         system_prompt=SYSTEM_PROMPT,
