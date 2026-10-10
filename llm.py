@@ -9,6 +9,10 @@ class LLMClient:
             api_key=os.environ["DEEPSEEK_API_KEY"],
             base_url="https://api.deepseek.com/v1",
         )
+        self.embed_client = OpenAI(
+            api_key=os.environ["DASHSCOPE_API_KEY"],
+            base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+        )
 
     def chat(self,messages:list,tools:list=None,temperature:float=0.7,max_retries: int = 3):
         """
@@ -52,3 +56,11 @@ class LLMClient:
             delta=chunk.choices[0].delta
             if delta.content:
                 yield delta.content
+
+    def embed(self, text: str) -> list:
+        """调用阿里云 text-embedding-v3，返回 1024 维向量。"""
+        response = self.embed_client.embeddings.create(
+            model="text-embedding-v3",
+            input=text,
+        )
+        return response.data[0].embedding

@@ -3,8 +3,14 @@ import os
 from datetime import datetime
 
 class Memory:
-    def __init__(self,path:str="memory.json"):
+    # 去重阈值：相似度 > 此值认为是重复记忆
+    DEDUP_THRESHOLD = 0.85
+    # 检索阈值：相似度 < 此值不返回
+    RECALL_THRESHOLD = 0.5
+
+    def __init__(self,path:str="memory.json",embed_llm=None):
         self.path=path
+        self.embed_llm=embed_llm
         self.facts=[]
         if os.path.exists(path):
             try:
@@ -16,7 +22,7 @@ class Memory:
                 print(f"⚠️ 读取记忆失败，使用空记忆：{e}")
                 self.facts = []
 
-    def add(self,content:str):
+    def add(self,content:str,threshold: float = None):
         content=content.strip()
         if not content:
             return
