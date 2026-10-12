@@ -87,21 +87,26 @@ Day 3: 宽窄巷子 + 三星堆
 预算明细：约 ¥1,602/人
 ```
 
-##  项目结构
+## 项目结构
 
-```
-tool_agent/
-├── agent.py           # Agent 核心：ReAct 循环 + 压缩 + 记忆
-├── llm.py             # LLM 客户端（带重试）
-├── tools.py           # 工具定义（JSON Schema）
-├── memory.py          # 长期记忆（JSON 持久化）
-├── main.py            # 命令行入口
-├── web_ui.py          # Streamlit Web UI
-├── test_tools.py      # 工具测试
-├── test_memory.py     # 记忆测试
-├── requirements.txt   # 依赖
-└── README.md
-```
+这个项目包含两个部分：
+
+### Part 1: Agent 框架（手写）
+- ReAct + Function Calling
+- 上下文压缩 + 长期记忆（向量检索 + 语义去重）
+- Streamlit Web UI
+- 详细的代码在根目录
+
+### Part 2: SFT 微调（医疗领域）
+- QLoRA 微调 Qwen2.5-0.5B
+- 200 条医疗问答数据
+- 详细的代码在 `SFT/` 目录
+
+### 两者的关系
+Agent 负责"通用能力 + 工具调用"，SFT 负责"领域专精"。
+实际部署时，可以根据场景选择：
+- 通用场景 → Agent + DeepSeek
+- 领域场景 + 隐私要求 → Agent + 微调后的本地模型
 
 ## 测试
 
