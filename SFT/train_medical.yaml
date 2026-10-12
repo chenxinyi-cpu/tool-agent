@@ -1,0 +1,36 @@
+### ===== 1. 模型 =====
+model_name_or_path: /home/b224/cxy/Qwen2.5-0.5B-Instruct
+trust_remote_code: true
+
+### ===== 2. 微调方法 =====
+stage: sft
+do_train: true
+finetuning_type: lora
+lora_rank: 8
+lora_target: all
+quantization_bit: 4
+
+### ===== 3. 数据集 =====
+dataset: medical_sft
+template: qwen
+cutoff_len: 1024
+max_samples: 100000
+overwrite_cache: true
+preprocessing_num_workers: 4
+
+### ===== 4. 输出 =====
+output_dir: /home/b224/cxy/LlamaFactory/saves/qwen2.5-0.5b-medical
+logging_steps: 10
+save_steps: 100
+plot_loss: true
+overwrite_output_dir: true
+
+### ===== 5. 训练超参数 =====
+per_device_train_batch_size: 2
+gradient_accumulation_steps: 4
+learning_rate: 1.0e-4
+num_train_epochs: 3.0
+lr_scheduler_type: cosine
+warmup_ratio: 0.1
+bf16: true
+ddp_timeout: 180000000
