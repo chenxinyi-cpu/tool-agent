@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from llm import LLMClient
 from agent import Agent
 from memory import Memory
+from skill_loader import format_skill_list_for_prompt
 
 load_dotenv()
 
@@ -20,7 +21,7 @@ SYSTEM_PROMPT = """你是一个智能助手，可以使用工具帮助用户解�
   5. 综合以上信息，输出一份清晰的行程安排（按 Day 1 / Day 2 / Day 3 分天），
      并在末尾给出预算明细（包含每一项价格和总价）
 
-得到足够信息后，用自然语言给出完整、清晰的回答。"""
+得到足够信息后，用自然语言给出完整、清晰的回答。"""+ "\n\n" + format_skill_list_for_prompt()
 
 def main():
     llm = LLMClient(model="deepseek-chat")

@@ -1,6 +1,7 @@
 import ast
 import operator
 from http.client import responses
+from skill_loader import load_skill as _load_skill_impl
 
 import requests
 
@@ -193,6 +194,23 @@ TOOLS_SCHEMA = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "load_skill",
+            "description": "加载一个 skill 的完整流程说明。当任务匹配某个 skill 时调用。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "skill 名字，例如 'medical'",
+                    }
+                },
+                "required": ["name"],
+            },
+        },
+    },
 ]
 
 TOOL_REGISTRY = {
@@ -200,6 +218,7 @@ TOOL_REGISTRY = {
     "calculator": calculator,
     "search_attractions": search_attractions,
     "estimate_budget": estimate_budget,
+    "load_skill": _load_skill_impl,
 }
 
 

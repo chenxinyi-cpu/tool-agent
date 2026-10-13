@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from llm import LLMClient
 from agent import Agent
 from memory import Memory
+from skill_loader import format_skill_list_for_prompt
 
 load_dotenv()
 
@@ -19,7 +20,7 @@ SYSTEM_PROMPT = """你是一个智能助手，可以使用工具帮助用户解�
   3. 用 estimate_budget 搜索真实价格
   4. 根据真实价格用 calculator 计算总预算
   5. 输出清晰的行程安排和预算明细
-  """
+  """+ "\n\n" + format_skill_list_for_prompt()
 
 @st.cache_resource
 def get_agent():
