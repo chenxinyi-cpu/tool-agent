@@ -14,6 +14,7 @@
 - **单元测试**：pytest 覆盖核心模块
 - **错误重试**：指数退避重试 LLM 调用
 - **Skill 系统**：按需加载流程知识（如医疗问诊），参考 Claude Code 设计
+- **MCP 协议集成**：3 个独立 MCP Server（Weather/Travel/Math），支持跨应用工具复用
 
 ##  架构
 
@@ -32,6 +33,18 @@
 │LLM ││工具  ││记忆  │
 │llm ││tools││memory│
 └────┘└─────┘└──────┘
+          ↓
+┌──────────────────────┐
+│  MCP Adapter         │  同步/异步桥接
+│  (mcp_adapter.py)    │
+└──────────┬───────────┘
+           ↓
+   ┌───────┼───────┐
+   ↓       ↓       ↓
+┌──────┐┌──────┐┌──────┐
+│Weather││Travel││ Math │  MCP Servers
+│Server ││Server││Server│
+└──────┘└──────┘└──────┘
 ```
 
 ##  快速开始
@@ -76,10 +89,10 @@ streamlit run web_ui.py
 你: 帮我规划去成都玩 3 天，预算中等
 
 [Agent 自动执行]
-🔧 get_weather({'city': '成都'})
-🔧 search_attractions({'city': '成都', 'days': 3})
-🔧 estimate_budget({'city': '成都', 'days': 3, 'level': '中等'})
-🔧 calculator({'expression': '346*2 + 200*3 + 310'})
+ get_weather({'city': '成都'})                    → WeatherServer (MCP)
+ search_attractions({'city': '成都', 'days': 3}) → TravelServer  (MCP)
+ estimate_budget({'city': '成都', 'days': 3, 'level': '中等'}) → TravelServer (MCP)
+ calculator({'expression': '346*2 + 200*3 + 310'}) → MathServer  (MCP)
 
 助手: 【成都 3 天行程规划】
 Day 1: 熊猫基地 + 市区文化
@@ -102,17 +115,23 @@ Day 3: 宽窄巷子 + 三星堆
 - 200 条医疗问答数据
 - 详细的代码在 `SFT/` 目录
 
+### 两者的关系
+Agent 负责"通用能力 + 工具调用"，SFT 负责"领域专精"。
+实际部署时，可以根据场景选择：
+- 通用场景 → Agent + DeepSeek
+- 领域场景 + 隐私要求 → Agent + 微调后的本地模型
+
 ### Part 3: Skill 系统（流程知识复用）
 - `SKILL.md` 定义可复用的流程（使用场景、回答步骤、输出格式、验收标准）
 - Agent 启动时只加载 skill 名字+描述（省 token）
 - 任务匹配时通过 `load_skill(name)` 工具按需加载完整内容
 - 详细的代码在 `skill_loader.py` 和 `skills/` 目录
 
-### 两者的关系
-Agent 负责"通用能力 + 工具调用"，SFT 负责"领域专精"。
-实际部署时，可以根据场景选择：
-- 通用场景 → Agent + DeepSeek
-- 领域场景 + 隐私要求 → Agent + 微调后的本地模型
+### Part 4: MCP 协议集成（工具标准化）
+- 3 个独立 MCP Server（Weather / Travel / Math），各自负责一类工具
+- MCP Adapter 做同步/异步桥接，自动转换 Schema 格式
+- 工具从"硬编码在 Agent 里"变成"可独立部署的 Server"
+- 详细的代码在 `mcp_adapter.py` 和 `mcp_servers/` 目录
 
 ## 测试
 
@@ -187,6 +206,30 @@ Skill 是**可复用的流程知识**，和 Tool（能力）、Prompt（指令�
 | 需要训练 | 不需要 | 需要 |
 | 改需求成本 | 改文档（分钟） | 重新训练（小时） |
 | 适合场景 | 流程外化 | 行为内化 |
+
+### 8. MCP 集成（同步/异步桥接）
+
+**核心挑战**：Agent 是同步的（普通函数调用），MCP 是异步的（`async/await`）。需要一个桥接层。
+
+**解决方案**：
+- 用**后台 asyncio 线程**维持所有 MCP 连接
+- 主线程通过 `asyncio.run_coroutine_threadsafe` 调用后台异步 API
+- 用 `AsyncExitStack` 管理所有连接的生命周期
+
+**Schema 自动转换**：
+- MCP 格式：`{name, description, inputSchema}`
+- OpenAI 格式：`{type: "function", function: {name, description, parameters}}`
+- 适配器自动完成字段重命名 + 嵌套包装 + 空值兜底
+
+**路由机制**：
+- 启动时建立 `tool_name → server_name` 路由表
+- LLM 决定调用后，Agent 查表找到对应的 MCP Server
+- 支持多 Server 协作（一个 Agent 可同时挂载 3 个 Server）
+
+**为什么用 MCP**：
+- **可复用**：Weather Server 可以被任何支持 MCP 的应用使用（Claude Desktop、Cursor、我的 Agent）
+- **可解耦**：每个 Server 独立部署、独立升级
+- **标准化**：解决 M×N 集成问题，降到 M+N
 
 ##  参考
 

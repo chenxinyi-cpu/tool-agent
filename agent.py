@@ -6,7 +6,8 @@ from tools import TOOLS_SCHEMA, execute_tool
 
 class Agent:
     def __init__(self, llm:LLMClient,system_prompt:str,
-                 memory:Memory=None,max_iterations:int=3,context_limit:int=4000):
+                 memory:Memory=None,max_iterations:int=3,context_limit:int=4000,
+                 mcp_adapter=None):
         self.llm = llm
         self.system_prompt = system_prompt
         self.memory = memory
@@ -15,10 +16,17 @@ class Agent:
         self.history = []  # 对话历史（user / assistant / tool 消息）
         self.summary = ""  # 上下文压缩后的历史摘要
 
+        self.mcp_adapter = mcp_adapter
+        if mcp_adapter is not None:
+            self.tools_schema = mcp_adapter.openai_tools
+        else:
+            from tools import TOOLS_SCHEMA
+            self.tools_schema = TOOLS_SCHEMA
+
     def run(self,user_input:str)->str:
         messages = self._build_messages(user_input)
         for step in range(self.max_iterations):
-            msg = self.llm.chat(messages, tools=TOOLS_SCHEMA)
+            msg = self.llm.chat(messages, tools=self.tools_schema)
 
             if not msg.tool_calls:
                 answer=msg.content or ""
@@ -46,7 +54,11 @@ class Agent:
             for tc in msg.tool_calls:
                 args=json.loads(tc.function.arguments)
                 print(f"调用工具{tc.function.name}（{args}）")
-                result=execute_tool(tc.function.name,args)
+                if self.mcp_adapter and self.mcp_adapter.has_tool(tc.function.name):
+                    result = self.mcp_adapter.call_tool(tc.function.name, args)
+                else:
+                    from tools import execute_tool
+                    result = execute_tool(tc.function.name, args)
                 print(f"{result[:100]}")
                 messages.append({
                     "role":"tool",

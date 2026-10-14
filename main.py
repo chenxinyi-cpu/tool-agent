@@ -2,6 +2,7 @@
 from dotenv import load_dotenv
 from llm import LLMClient
 from agent import Agent
+from mcp_adapter import build_default_adapter
 from memory import Memory
 from skill_loader import format_skill_list_for_prompt
 
@@ -24,14 +25,21 @@ SYSTEM_PROMPT = """你是一个智能助手，可以使用工具帮助用户解�
 得到足够信息后，用自然语言给出完整、清晰的回答。"""+ "\n\n" + format_skill_list_for_prompt()
 
 def main():
+    print("正在启动 MCP 适配器...")
+    mcp_adapter = build_default_adapter()
+    mcp_adapter.start()
+    print()
+
+
     llm = LLMClient(model="deepseek-chat")
-    memory = Memory(path="memory.json",llm=llm)
+    memory = Memory(path="memory.json", llm=llm)
     agent = Agent(
-        llm=llm,
-        system_prompt=SYSTEM_PROMPT,
-        memory=memory,
-        max_iterations=8,
-        context_limit=8000,
+            llm=llm,
+            system_prompt=SYSTEM_PROMPT,
+            memory=memory,
+            max_iterations=8,
+            context_limit=8000,
+            mcp_adapter=mcp_adapter,  # 🆕 传入适配器
     )
 
     print("=" * 50)
@@ -61,6 +69,7 @@ def main():
         print()
         answer = agent.run(user_input)
         print(f"\n助手: {answer}")
+
 
 
 if __name__ == "__main__":
