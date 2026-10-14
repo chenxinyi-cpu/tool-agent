@@ -65,7 +65,9 @@ class Agent:
                     "tool_call_id":tc.id,
                     "content":result,
                 })
-        return "抱歉，未在规定步骤完成任务"
+
+        completed_tools = [h.get("tool", "unknown") for h in self.history if h.get("role") == "tool"]
+        return f"任务未在 {self.max_iterations} 步内完成。已完成的步骤：{completed_tools}。请尝试更具体的提问。"
 
     # ---------- 流式运行（不支持工具调用，适合简单问答） ----------
     def run_stream(self,user_input:str):

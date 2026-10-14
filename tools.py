@@ -2,6 +2,7 @@ import ast
 import operator
 from http.client import responses
 from skill_loader import load_skill as _load_skill_impl
+from rag.retriever import search_knowledge_base
 
 import requests
 
@@ -211,6 +212,31 @@ TOOLS_SCHEMA = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "search_knowledge_base",
+            "description": (
+                "从本地知识库检索相关文档片段。"
+                "适用于：医疗健康类问题（症状、用药、就医建议）、"
+                "询问本项目的实现细节（MCP、Skill、记忆机制等）。"
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "检索关键词或自然语言问题",
+                    },
+                    "k": {
+                        "type": "integer",
+                        "description": "返回文档数量，默认 3",
+                    },
+                },
+                "required": ["query"],
+            },
+        },
+    },
 ]
 
 TOOL_REGISTRY = {
@@ -219,6 +245,7 @@ TOOL_REGISTRY = {
     "search_attractions": search_attractions,
     "estimate_budget": estimate_budget,
     "load_skill": _load_skill_impl,
+    "search_knowledge_base": search_knowledge_base,
 }
 
 
