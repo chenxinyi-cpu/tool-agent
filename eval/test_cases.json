@@ -1,0 +1,86 @@
+[
+  {
+    "id": 1,
+    "task": "北京今天天气怎么样",
+    "expected_tools": ["get_weather"],
+    "category": "single_tool",
+    "description": "单工具：天气查询"
+  },
+  {
+    "id": 2,
+    "task": "上海天气如何",
+    "expected_tools": ["get_weather"],
+    "category": "single_tool",
+    "description": "单工具：天气查询（另一种问法）"
+  },
+  {
+    "id": 3,
+    "task": "帮我算 (15 + 27) * 3",
+    "expected_tools": ["calculator"],
+    "category": "single_tool",
+    "description": "单工具：数学计算"
+  },
+  {
+    "id": 4,
+    "task": "1234 * 5678 等于多少",
+    "expected_tools": ["calculator"],
+    "category": "single_tool",
+    "description": "单工具：大数乘法"
+  },
+  {
+    "id": 5,
+    "task": "成都 3 天旅游有什么景点推荐",
+    "expected_tools": ["search_attractions"],
+    "category": "single_tool",
+    "description": "单工具：景点搜索"
+  },
+  {
+    "id": 6,
+    "task": "西安 5 天中等预算大概多少钱",
+    "expected_tools": ["estimate_budget"],
+    "category": "single_tool",
+    "description": "单工具：预算估算"
+  },
+  {
+    "id": 7,
+    "task": "你好，请介绍一下自己",
+    "expected_tools": [],
+    "category": "no_tool",
+    "description": "无需工具：闲聊"
+  },
+  {
+    "id": 8,
+    "task": "什么是机器学习",
+    "expected_tools": [],
+    "category": "no_tool",
+    "description": "无需工具：常识问答"
+  },
+  {
+    "id": 9,
+    "task": "帮我规划去成都玩 3 天，预算中等",
+    "expected_tools": ["get_weather", "search_attractions", "estimate_budget"],
+    "category": "multi_tool",
+    "description": "多工具：旅游规划（核心场景）"
+  },
+  {
+    "id": 10,
+    "task": "我想去三亚玩 4 天，天气怎么样，有什么好玩的地方",
+    "expected_tools": ["get_weather", "search_attractions"],
+    "category": "multi_tool",
+    "description": "多工具：天气 + 景点"
+  },
+  {
+    "id": 11,
+    "task": "成都和重庆哪个更适合旅游，帮我查一下",
+    "expected_tools": ["search_attractions"],
+    "category": "single_tool",
+    "description": "单工具：比较型问题（可能调用 search）"
+  },
+  {
+    "id": 12,
+    "task": "北京天气怎么样，如果下雨适合去哪里玩",
+    "expected_tools": ["get_weather", "search_attractions"],
+    "category": "multi_tool",
+    "description": "多工具：天气 + 景点（条件推理）"
+  }
+]

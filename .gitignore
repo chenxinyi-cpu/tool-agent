@@ -26,3 +26,5 @@ test_memory.json
 # 其他
 .DS_Store
 *.log
+
+eval/eval_memory.json

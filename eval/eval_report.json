@@ -1,0 +1,187 @@
+{
+  "total": 12,
+  "exact_pass": 8,
+  "contains_pass": 9,
+  "errors": 0,
+  "avg_latency": 8.873742043972015,
+  "results": [
+    {
+      "id": 1,
+      "task": "北京今天天气怎么样",
+      "expected": [
+        "get_weather"
+      ],
+      "called": [
+        "get_weather"
+      ],
+      "exact_match": true,
+      "contains_match": true,
+      "latency": 8.23136591911316,
+      "error": null,
+      "answer_preview": "北京今天天气为**阴天（Overcast）**，当前气温 **21°C**。\n\n体感比较舒适，出门建议带一件薄外套，以防早晚温差。需要我帮你查一下北京适合游玩的"
+    },
+    {
+      "id": 2,
+      "task": "上海天气如何",
+      "expected": [
+        "get_weather"
+      ],
+      "called": [
+        "get_weather"
+      ],
+      "exact_match": true,
+      "contains_match": true,
+      "latency": 4.746056318283081,
+      "error": null,
+      "answer_preview": "上海今天天气为**晴天（Sunny）**，当前气温 **23°C**。\n\n天气很不错，阳光明媚、温度宜人，很适合出门游玩或city walk。需要我帮你推荐一下"
+    },
+    {
+      "id": 3,
+      "task": "帮我算 (15 + 27) * 3",
+      "expected": [
+        "calculator"
+      ],
+      "called": [
+        "calculator"
+      ],
+      "exact_match": true,
+      "contains_match": true,
+      "latency": 2.9567370414733887,
+      "error": null,
+      "answer_preview": "(15 + 27) × 3 = **126**\n\n计算过程：15 + 27 = 42，42 × 3 = 126。"
+    },
+    {
+      "id": 4,
+      "task": "1234 * 5678 等于多少",
+      "expected": [
+        "calculator"
+      ],
+      "called": [],
+      "exact_match": false,
+      "contains_match": false,
+      "latency": 2.3177452087402344,
+      "error": null,
+      "answer_preview": "1234 × 5678 = **7,006,652**"
+    },
+    {
+      "id": 5,
+      "task": "成都 3 天旅游有什么景点推荐",
+      "expected": [
+        "search_attractions"
+      ],
+      "called": [
+        "search_attractions"
+      ],
+      "exact_match": true,
+      "contains_match": true,
+      "latency": 8.932646989822388,
+      "error": null,
+      "answer_preview": "为你整理了一份成都 3 天旅游景点推荐：\n\n## 🐼 成都 3 天行程推荐\n\n**第一天：熊猫基地 + 市区经典**\n- **成都大熊猫繁育研究基地**——来成"
+    },
+    {
+      "id": 6,
+      "task": "西安 5 天中等预算大概多少钱",
+      "expected": [
+        "estimate_budget"
+      ],
+      "called": [
+        "calculator",
+        "estimate_budget"
+      ],
+      "exact_match": false,
+      "contains_match": true,
+      "latency": 15.772863149642944,
+      "error": null,
+      "answer_preview": "根据搜索到的西安真实价格数据，帮你估算如下（**不含往返机票**）：\n\n## 💰 西安 5 天中等预算估算\n\n| 项目 | 单价参考 | 天数/数量 | 小计 "
+    },
+    {
+      "id": 7,
+      "task": "你好，请介绍一下自己",
+      "expected": [],
+      "called": [],
+      "exact_match": true,
+      "contains_match": true,
+      "latency": 3.546703815460205,
+      "error": null,
+      "answer_preview": "你好！我是一个智能助手，可以帮你处理各种日常问题。我主要能提供以下几类帮助：\n\n## 🛠️ 我能做什么\n\n- **🌤️ 天气查询**：查询任意城市的实时天气状况"
+    },
+    {
+      "id": 8,
+      "task": "什么是机器学习",
+      "expected": [],
+      "called": [],
+      "exact_match": true,
+      "contains_match": true,
+      "latency": 4.471404552459717,
+      "error": null,
+      "answer_preview": "机器学习（Machine Learning，简称 ML）是人工智能（AI）的一个核心分支，简单来说：\n\n> **让计算机从数据中自动学习规律，并用来做预测或决策"
+    },
+    {
+      "id": 9,
+      "task": "帮我规划去成都玩 3 天，预算中等",
+      "expected": [
+        "get_weather",
+        "estimate_budget",
+        "search_attractions"
+      ],
+      "called": [
+        "calculator",
+        "estimate_budget",
+        "search_attractions"
+      ],
+      "exact_match": false,
+      "contains_match": false,
+      "latency": 20.71194362640381,
+      "error": null,
+      "answer_preview": "# 🐼 成都 3 天行程规划（中等预算）\n\n## 📅 行程安排\n\n### 第一天：熊猫 + 市区经典\n- **成都大熊猫繁育研究基地**（门票约 58–70 元"
+    },
+    {
+      "id": 10,
+      "task": "我想去三亚玩 4 天，天气怎么样，有什么好玩的地方",
+      "expected": [
+        "get_weather",
+        "search_attractions"
+      ],
+      "called": [
+        "get_weather",
+        "search_attractions"
+      ],
+      "exact_match": true,
+      "contains_match": true,
+      "latency": 12.866578340530396,
+      "error": null,
+      "answer_preview": "为你整理了三亚 4 天的天气和游玩推荐～\n\n## 🌤️ 三亚天气\n- **当前天气**：多云（Cloudy）\n- **气温**：**30°C**——比较炎热，注"
+    },
+    {
+      "id": 11,
+      "task": "成都和重庆哪个更适合旅游，帮我查一下",
+      "expected": [
+        "search_attractions"
+      ],
+      "called": [
+        "search_attractions"
+      ],
+      "exact_match": true,
+      "contains_match": true,
+      "latency": 12.522010803222656,
+      "error": null,
+      "answer_preview": "根据查询结果，帮你把成都和重庆做个对比：\n\n## 🐼 成都 vs 🌆 重庆 旅游对比\n\n### 🐼 成都——\"休闲慢生活之都\"\n\n**推荐景点：**\n- **成"
+    },
+    {
+      "id": 12,
+      "task": "北京天气怎么样，如果下雨适合去哪里玩",
+      "expected": [
+        "get_weather",
+        "search_attractions"
+      ],
+      "called": [
+        "get_weather"
+      ],
+      "exact_match": false,
+      "contains_match": false,
+      "latency": 9.408848762512207,
+      "error": null,
+      "answer_preview": "北京当前天气：**阴天（Overcast）**，气温 **21°C**。\n\n## ☁️ 关于天气\n目前是**阴天，没有下雨**，气温 21°C 比较舒适，其实挺"
+    }
+  ]
+}

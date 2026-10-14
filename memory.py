@@ -110,8 +110,12 @@ class Memory:
             return 0.0
         return float(np.dot(a, b) / denom)
 
-
     def _save(self):
+        # 确保父目录存在（防止路径如 eval/memory.json 时目录不存在）
+        import os
+        parent = os.path.dirname(self.path)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
         with open(self.path, "w", encoding="utf-8") as f:
             json.dump(self.facts, f, ensure_ascii=False, indent=2)
 
